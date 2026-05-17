@@ -1,0 +1,58 @@
+<?php
+
+declare(strict_types=1);
+
+namespace app\models;
+
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+
+/**
+ * @property int $id
+ * @property string $ip
+ * @property string $url
+ * @property string $requested_at
+ * @property string $user_agent
+ * @property int $operating_system_id
+ * @property int $architecture_id
+ * @property int $browser_id
+ *
+ * @property OperatingSystem $operatingSystem
+ * @property Browser $browser
+ * @property Architecture $architecture
+ */
+class Log extends ActiveRecord
+{
+    public static function tableName(): string
+    {
+        return 'logs';
+    }
+
+    public function rules(): array
+    {
+        return [
+            [['ip', 'url', 'user_agent'], 'required'],
+            [['ip', 'url', 'user_agent'], 'string', 'max' => 255],
+            [['requested_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            [['operating_system_id', 'architecture_id', 'browser_id'], 'integer'],
+            [['operating_system_id'], 'exist', 'skipOnError' => true, 'targetClass' => OperatingSystem::class, 'targetAttribute' => ['operating_system_id' => 'id']],
+            [['architecture_id'], 'exist', 'skipOnError' => true, 'targetClass' => Architecture::class, 'targetAttribute' => ['architecture_id' => 'id']],
+            [['browser_id'], 'exist', 'skipOnError' => true, 'targetClass' => Browser::class, 'targetAttribute' => ['browser_id' => 'id']],
+        ];
+    }
+
+    public function getOperatingSystem(): ActiveQuery
+    {
+        return $this->hasOne(OperatingSystem::class, ['id' => 'operating_system_id']);
+    }
+
+    public function getArchitecture(): ActiveQuery
+    {
+        return $this->hasOne(Architecture::class, ['id' => 'architecture_id']);
+    }
+
+    public function getBrowser(): ActiveQuery
+    {
+        return $this->hasOne(Browser::class, ['id' => 'browser_id']);
+    }
+}

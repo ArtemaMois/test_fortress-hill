@@ -7,11 +7,17 @@ namespace app\models;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
-class OperatingSystems extends ActiveRecord
+/**
+ * @property int $id
+ * @property string $name
+ *
+ * @property Log[] $logs
+ */
+class Browser extends ActiveRecord
 {
     public static function tableName(): string
     {
-        return 'operating_systems';
+        return 'browsers';
     }
 
     public function rules(): array
@@ -24,6 +30,6 @@ class OperatingSystems extends ActiveRecord
 
     public function getLogs(): ActiveQuery
     {
-        return $this->hasMany(Logs::class, ['operating_system_id' => 'id']);
+        return $this->hasMany(Log::class, ['browser_id' => 'id']);
     }
 }
