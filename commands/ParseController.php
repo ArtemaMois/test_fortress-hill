@@ -29,9 +29,6 @@ class ParseController extends Controller
 
     public int $batchSize = 100;
 
-    /**
-     * Кэш справочников
-     */
     private array $_browserCache = [];
     private array $_osCache = [];
     private array $_architectureCache = [];
@@ -51,11 +48,6 @@ class ParseController extends Controller
         return array_merge(parent::options($actionID), ['batchSize']);
     }
 
-    /**
-     * Пример:
-     *
-     * php yii parse/parse @app/modimio.access.log
-     */
     public function actionParse(string $filePath): int
     {
         Yii::$app->log->targets = [];
@@ -118,9 +110,6 @@ class ParseController extends Controller
         return self::EXIT_CODE_NORMAL;
     }
 
-    /**
-     * Парсинг строки лога
-     */
     private function parseLine(string $line): ?array
     {
         $pattern = '/^(?<ip>\S+) .* \[(?<date>[^\]]+)\] '
@@ -147,11 +136,6 @@ class ParseController extends Controller
         ];
     }
 
-    /**
-     * Apache date -> MySQL datetime
-     *
-     * 21/Mar/2019:00:20:06 +0300
-     */
     private function parseDate(string $date): string
     {
         $dateTime = DateTime::createFromFormat(
@@ -164,9 +148,6 @@ class ParseController extends Controller
             : date('Y-m-d H:i:s');
     }
 
-    /**
-     * Определение архитектуры
-     */
     private function detectArchitecture(string $userAgent): string
     {
         if (preg_match('/(x86_64|Win64|WOW64|amd64|x64)/i', $userAgent)) {
@@ -180,10 +161,6 @@ class ParseController extends Controller
         return 'unknown';
     }
 
-    /**
-     * Подготовка строки для batch insert.
-     * @throws Exception
-     */
     private function buildLogRow(array $data): array
     {
         $browserId = $this->getBrowserId($data['browser']);
@@ -212,7 +189,7 @@ class ParseController extends Controller
     }
 
     /**
-     * Browser
+     * @throws Exception
      */
     private function getBrowserId(string $name): int
     {
@@ -224,7 +201,7 @@ class ParseController extends Controller
     }
 
     /**
-     * Operating System
+     * @throws Exception
      */
     private function getOperatingSystemId(string $name): int
     {
@@ -236,7 +213,6 @@ class ParseController extends Controller
     }
 
     /**
-     * Architecture
      * @throws Exception
      */
     private function getArchitectureId(string $name): int

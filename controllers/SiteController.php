@@ -7,7 +7,6 @@ namespace app\controllers;
 use Yii;
 use app\models\ContactForm;
 use app\models\LogSearchForm;
-use app\models\LoginForm;
 use yii\captcha\CaptchaAction;
 use yii\db\Exception;
 use yii\filters\AccessControl;
@@ -23,8 +22,6 @@ class SiteController extends Controller
     public function __construct(
         $id,
         $module,
-        private readonly MailerInterface $mailer,
-        private readonly Security $security,
         $config = [],
     ) {
         parent::__construct($id, $module, $config);
@@ -73,11 +70,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
     public function actionIndex(): string
     {
         return $this->render('index');
